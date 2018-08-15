@@ -24,7 +24,6 @@ class Floor
   end
 end
 
-
 class Game < Window
   def initialize
     super(1233, 480, false)
@@ -39,12 +38,20 @@ class Game < Window
 	##########################################
 	#cacti, Dec variables are to move them across the screen, only using two cacti overall
 	# heights are used to detect collisions
-	@smallCacti = Image.new("smallCacti.png")
+	@smallCacti = Image.new("smallCacti.png", false)
 	@sDec = 1233
-	@bigCacti = Image.new("bigCacti.png")
+	@bigCacti = Image.new("bigCacti.png", false)
 	@bDec = 1233 + rand(500..1233)
-	@bigCactHeight = 283
-	@smallCactHeight = 293
+	@bigCactHeight = 273
+	@smallCactHeight = 283
+	@smallCacti1 = Image.new("smallCacti.png", false)
+	@sDec1 = 1233 + rand(500..1233)
+	@bigCacti1 = Image.new("bigCacti.png", false)
+	@bDec1 = 1233 + rand(500..1233)
+	@smallCacti2 = Image.new("smallCacti.png", false)
+	@sDec2 = 1233 + rand(500..1233)
+	@bigCacti2 = Image.new("bigCacti.png", false)
+	@bDec2 = 1233 + rand(500..1233)
 	##########################################
 	# bX and bY are bird positions, X position is based on cacti, subject to change, y 
 	# is within range to hit our player, curBird is the sprite currently used
@@ -104,10 +111,10 @@ class Game < Window
 	else
 	#################################################################
 	# hit detection for small cactus, big cactus, and birds. if we hit any of them game = false
-		if (@sDec <= 60 and @sDec >= -65) and @y >= @smallCactHeight
+		if ((@sDec <= 73 and @sDec >= 15) or (@sDec1 <= 65 and @sDec1 >= 12) or (@sDec2 <= 65 and @sDec2 >= 12)) and @y >= @smallCactHeight
 			@game = false
 		end
-		if (@bDec <= 60 and @bDec >= -90) and @y >= @bigCactHeight
+		if ((@bDec <= 73 and @bDec >= 15) or (@bDec1 <= 70 and @bDec1 >= 12) or (@bDec2 <= 70 and @bDec2 >= 12)) and @y >= @bigCactHeight
 			@game = false
 		end
 		# birds have to handle crouch, standing, and jumping
@@ -131,20 +138,46 @@ class Game < Window
 			@c1Dec -= 1
 			@bDec -= 7 + @speedUp
 			@sDec -= 7 + @speedUp
+			@bDec1 -= 7 + @speedUp
+			@sDec1 -= 7 + @speedUp
+			@bDec2 -= 7 + @speedUp
+			@sDec2 -= 7 + @speedUp
 			@c2Dec -= 1
 			@c3Dec -= 1
 			@bX -= 7 + @speedUp
 			##########################################################
 			# if we have moved an item off the page then respawn it on the end of the window
 			# big cactus
-			if @bDec <= -150 then
-				@bDec = 1233 + rand(0..1233) + @sDec
+			if @bDec <= -40 then
+				@bDec = 1233 + rand(0..3000)
 			end
 			# small cactus
-			if @sDec <= -100 then
-				@sDec = rand(500..1233) + @bDec
+			if @sDec <= -40 then
+				@sDec = rand(500..3000)
 				if @sDec < 1233
-					@sDec = @sDec + (1233 - @sDec) + @bX
+					@sDec = @sDec + (1233 - @sDec)
+				end
+			end
+			#big cactus 1
+			if @bDec1 <= -40 then
+				@bDec1 = 1233 + rand(0..3000)
+			end
+			# small cactus 1
+			if @sDec1 <= -40 then
+				@sDec1 = rand(500..3000)
+				if @sDec1 < 1233
+					@sDec1 = @sDec1 + (1233 - @sDec1)
+				end
+			end
+			#big cactus 2
+			if @bDec2 <= -40 then
+				@bDec2 = 1233 + rand(0..3000)
+			end
+			# small cactus 2
+			if @sDec2 <= -40 then
+				@sDec2 = rand(500..3000)
+				if @sDec2 < 1233
+					@sDec2 = @sDec2 + (1233 - @sDec2)
 				end
 			end
 			# cloud 1
@@ -215,8 +248,12 @@ class Game < Window
 	@cloud1.draw(@c1Dec, @c1Y, 0)
 	@cloud2.draw(@c2Dec, @c2Y, 0)
 	@cloud2.draw(@c3Dec, @c3Y, 0)
-	@smallCacti.draw(@sDec, 308, 0)
-	@bigCacti.draw(@bDec, 308, 0)
+	@smallCacti.draw(@sDec, 292, 0, 1.25, 1.25)
+	@bigCacti.draw(@bDec, 292, 0, 1.25, 1.25)
+	@smallCacti1.draw(@sDec1, 292, 0, 1.25, 1.25)
+	@bigCacti1.draw(@bDec1, 292, 0, 1.25, 1.25)
+	@smallCacti2.draw(@sDec2, 292, 0, 1.25, 1.25)
+	@bigCacti2.draw(@bDec2, 292, 0, 1.25, 1.25)
 	@cur_image.draw(@x - 25, @y, 0, 1, 1.0)
 	@curBird.draw(@bX, @bY, 0, 1, 1.0)
 	#########################################
@@ -243,7 +280,7 @@ class Game < Window
   def button_down(id)
   ##################################
   # if we press 'w' then we need to either stand up or jump, but only if we are on the ground
-    if id == KbW && @y == 313
+    if id == KbW && @y >= 309
 		if @key == 1
 			@key = 0
 		else 
