@@ -3,7 +3,7 @@ require 'rubygems'
 require 'gosu'
 include Gosu
 # jumping mechanics and some framework from: https://github.com/FloorD/gosu_tutorial_RG_TH
-
+# test
 class Floor
   attr_accessor :x, :y, :width, :height, :color
 
